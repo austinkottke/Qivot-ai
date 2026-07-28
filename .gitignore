@@ -1,0 +1,19 @@
+# Build output
+build/
+*.o
+*.obj
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+Makefile*
+.qmake.stash
+*.pro.user*
+
+# Built example binaries + the databases they write
+nextword/nextword
+*.db
+*.db-wal
+*.db-shm
+
+# macOS
+.DS_Store
