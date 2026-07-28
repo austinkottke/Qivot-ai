@@ -14,9 +14,14 @@ to know any AI to follow along.
 
 | Folder | What you build | The idea it teaches |
 |--------|----------------|---------------------|
-| [**nextword**](nextword/) | A tiny "guess the next word" writer | How a chatbot writes: guess the next word, over and over. Its whole "brain" is just rows in a table you can read. |
+| [**nextword**](nextword/) | A tiny "guess the next word" writer (terminal) | How a chatbot writes: guess the next word, over and over. Its whole "brain" is just rows in a table you can read. |
+| [**nextword-app**](nextword-app/) | The same model as a clickable **app** — watch it think | The same idea, but you *see* it: press Play and watch the choices and dice-rolls happen live. |
+| [**findsimilar**](findsimilar/) | A step-by-step "search by meaning" tool | How an AI looks things up: turn text into numbers, then find the closest numbers. The heart of search and of RAG. |
+| [**findsimilar-app**](findsimilar-app/) | The search as a clickable **app** — type and watch | The same idea, live: notes re-sort with animated bars as you type, and it shows *why* the winner matched. |
+| [**tensor**](tensor/) | One neural-network layer, by hand | What AI is literally made of: "tensors" (boxes of numbers) and one move — multiply by a grid of weights. |
+| [**tensor-app**](tensor-app/) | The layer as a clickable **app** — drag the sliders | The same layer, live: move R/G/B and watch the grid, the multiply-add, and the outputs recompute. |
 
-*(More on the way — a "search by meaning" tool and a "sort text into buckets" tool are next.)*
+*(More on the way — a "sort text into buckets" classifier is next.)*
 
 ## What you need
 

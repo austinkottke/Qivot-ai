@@ -2,9 +2,20 @@
 # ideas from scratch on top of Qivot (SQLite / tables / queries). No external
 # AI service is ever contacted.
 #
-# Each subfolder is one runnable lesson. More will be added over time.
+# Each subfolder is one runnable lesson:
+#   nextword          - a tiny "guess the next word" language model (terminal)
+#   nextword-app      - the same model as an interactive QML app (watch it think)
+#   findsimilar       - search by meaning: turn text into numbers, measure closeness
+#   findsimilar-app   - the same search as an interactive QML app (type and watch)
+#   tensor            - the numbers a neural network is made of, one layer by hand
+#   tensor-app        - the same layer as an interactive QML app (drag the sliders)
 
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    nextword        # a tiny "guess the next word" language model
+    nextword \
+    nextword-app \
+    findsimilar \
+    findsimilar-app \
+    tensor \
+    tensor-app

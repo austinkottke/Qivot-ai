@@ -8,6 +8,20 @@ No internet. No ChatGPT. No magic. Just counting.
 
 ---
 
+## The whole idea in one picture
+
+```mermaid
+flowchart LR
+    A["Example text<br/>(corpus.h)"] --> B["Count word pairs:<br/><b>after X comes Y</b>"]
+    B --> C[("Save the counts<br/>in SQLite")]
+    C --> D["Write: ask the table<br/><b>what comes next?</b><br/>and pick a word"]
+    D -->|"append, repeat"| D
+    style C fill:#e0e7ff,stroke:#4f46e5
+    style D fill:#dcfce7,stroke:#16a34a
+```
+
+---
+
 ## How it works, in three steps
 
 ### 1. It reads and counts
@@ -47,6 +61,17 @@ So after *"good night"*, it's a genuine four-way toss-up between *sea*, *cat*, *
 ### 3. It writes by guessing, one word at a time
 
 To write a sentence, it starts fresh, looks at the last word or two, asks the database *"what usually comes next?"*, and rolls weighted dice to pick one. Words it saw more often are more likely to get picked — but not guaranteed, which is why it doesn't just repeat the original text word-for-word. Then it repeats, using the word it just picked, and keeps going.
+
+```mermaid
+flowchart LR
+    S["last word:<br/><b>the</b>"] --> Q[("look it up<br/>in the table")]
+    Q --> P["sea 7 · sun 5<br/>little 5 · cat 4"]
+    P --> R["roll weighted dice<br/><b>➜ pick 'sea'</b>"]
+    R --> S2["last word is now<br/><b>sea</b> … repeat"]
+    S2 -.-> S
+    style Q fill:#e0e7ff,stroke:#4f46e5
+    style R fill:#dcfce7,stroke:#16a34a
+```
 
 That's it. Read → count → save → roll the dice. That loop, made enormously bigger and fancier, is the same idea behind the big AI chatbots.
 
