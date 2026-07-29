@@ -87,6 +87,114 @@ qmake && make
 
 ---
 
+## The Qt/C++ code, step by step
+
+Here is the whole program, in the order it runs. Every snippet is **real code from this
+folder** — [`models.h`](models.h) and [`main.cpp`](main.cpp) — nothing hidden.
+
+### Step 0 — Describe the weight grid as a table
+
+We don't hand-write any SQL. We describe *one row* of the grid as a small C++ class, and
+Qivot turns it into a database table for us ([`models.h`](models.h)):
+
+```cpp
+class Weight : public QiModel {
+    QI_MODEL
+public:
+    QiField<int>    outIdx;   // which output neuron (0 = brightness, 1 = warmth)
+    QiField<int>    inIdx;    // which input        (0 = red, 1 = green, 2 = blue)
+    QiField<double> value;    // the weight number itself
+};
+QI_DECLARE_MODEL(Weight, "weight",
+    QI_FIELD(outIdx), QI_FIELD(inIdx), QI_FIELD(value));
+```
+
+Each **row** is one number in the grid: its position (`outIdx`, `inIdx`) and its `value`.
+A 2×3 grid is just 6 rows. (There's a matching `Bias` class for the nudges.)
+
+### Step 1 — Open the database
+
+```cpp
+QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+db.setDatabaseName("tensor.db");            // a real file on disk
+db.open();
+
+QiConnection connection;
+connection.open(db);
+connection.addModel<Weight>();              // "here are my tables"
+connection.addModel<Bias>();
+connection.createTables();                  // builds them from the class descriptions
+```
+
+### Step 2 — Store the weights (the network's "knowledge")
+
+```cpp
+const double W[2][3] = { { 0.30, 0.59, 0.11 },      // brightness row
+                         { 0.90, 0.00, -0.90 } };   // warmth row
+QiTransaction tx;                                    // batch the writes = fast
+for (int o = 0; o < 2; o++) {
+    for (int i = 0; i < 3; i++) {
+        Weight w; w.outIdx = o; w.inIdx = i; w.value = W[o][i];
+        w.save();                                    // <-- inserts one row
+    }
+}
+tx.commit();
+```
+
+`w.save()` writes a single row. After this loop the `weight` table holds all six numbers —
+you could open `tensor.db` right now and read them. (A real network would *learn* these
+values from data instead of us typing them.)
+
+### Step 3 — Turn the input colour into numbers
+
+```cpp
+const double x[3] = { R / 255.0, G / 255.0, B / 255.0 };   // scale 0..255 → 0..1
+```
+
+That's the input **vector** — three numbers between 0 and 1.
+
+### Step 4 — Read a weight back out of the database
+
+```cpp
+QiList<Weight> wl = QiQuery<Weight>()
+    .filter(QiWhere("outIdx = ", o) && QiWhere("inIdx = ", i))
+    .all();
+const double v = wl.size() > 0 ? double(wl.at(0)->value) : 0.0;
+```
+
+This asks the table for the weight at grid position `(o, i)`. It's the same kind of query
+the search lesson uses — proof that the "model" genuinely lives in SQLite, not in the code.
+
+### Step 5 — The layer's math: multiply, then add
+
+```cpp
+double sum = Bs[o];                    // start with the bias nudge (Bs = biases)
+for (int i = 0; i < 3; i++)
+    sum += W[o][i] * x[i];             // each input × its weight, summed up
+```
+
+**This loop is the neural layer.** One output = every input times its weight, added
+together. Two outputs (brightness, warmth) → we run it twice.
+
+### Step 6 — Squash the result (the "activation")
+
+```cpp
+static double squash(double z) {
+    return 1.0 / (1.0 + std::exp(-z));   // turns ANY number into one between 0 and 1
+}
+...
+const double y = squash(sum);            // the final output number
+```
+
+The raw sum could be any size, so `squash` (a sigmoid) folds it into a tidy 0..1 range.
+That squasher is the "activation function" you hear people mention.
+
+**That's the entire program:** describe tables → store weights → read the input →
+multiply-and-add → squash. Six numbers, one loop, and one `exp()`. Everything else in AI
+is this exact shape, just far bigger.
+
+---
+
 ## Why this is the whole ballgame
 
 Modern AI is this same step, stacked and scaled:
