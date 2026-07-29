@@ -11,6 +11,7 @@
 #   tensor-app        - the same layer as an interactive QML app (drag the sliders)
 #   classify          - sort text into buckets (junk vs normal), learned from examples
 #   classify-app      - the same detector as an interactive QML app (type and watch)
+#   chatbot-app       - BONUS: a real downloaded model (Qwen 0.5B) running locally via llama.cpp
 
 TEMPLATE = subdirs
 
@@ -22,4 +23,5 @@ SUBDIRS += \
     tensor \
     tensor-app \
     classify \
-    classify-app
+    classify-app \
+    chatbot-app

@@ -9,8 +9,18 @@ Makefile*
 .qmake.stash
 *.pro.user*
 
-# Built example binaries + the databases they write
+# Built binaries (rebuilt from source; never commit these)
 nextword/nextword
+findsimilar/findsimilar
+tensor/tensor
+classify/classify
+nextword-app/nextwordapp
+findsimilar-app/findsimilarapp
+tensor-app/tensorapp
+classify-app/classifyapp
+chatbot-app/chatbotapp
+
+# Databases written at runtime
 *.db
 *.db-wal
 *.db-shm

@@ -89,6 +89,7 @@ flowchart LR
 | [**tensor-app**](tensor-app/) | The layer as a clickable **app** | Move R/G/B sliders and watch the grid, the multiply-add, and the outputs recompute live. |
 | [**classify**](classify/) | A junk-mail detector, learned from examples | How AI *decides*: count which words lean which way, then add up the evidence. |
 | [**classify-app**](classify-app/) | The detector as a clickable **app** | Type a message and watch the verdict, the meter, and the per-word evidence bars. |
+| [**chatbot-app**](chatbot-app/) 🦙 | **Bonus — a *real* model chat app** | Not from scratch: **downloads a real open model (Qwen 0.5B)** and runs it locally via llama.cpp. "The magic actually working." History saved via Qivot. |
 
 ---
 
@@ -127,6 +128,10 @@ walkthroughs without touching code. If you *do* read the code, it's short and co
 **Is this how ChatGPT works?** It's the same *ideas* — turn things into numbers, do math,
 learn from examples — at a tiny, readable scale. The real thing is millions of times bigger,
 but the shape is what you'll build here.
+
+## License
+
+[MIT](LICENSE) — free to use, learn from, and build on.
 
 ## Why build it all on a database?
 

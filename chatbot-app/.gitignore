@@ -1,0 +1,7 @@
+# The model file is ~0.5 GB — downloaded, not committed.
+models/
+*.gguf
+
+# Chat history written at runtime
+chat.db
+chat.db-*
