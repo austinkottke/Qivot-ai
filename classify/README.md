@@ -1,5 +1,7 @@
 # Sort into Buckets — how an AI *decides*
 
+> **Lesson 4 of 4** · [Qivot AI](../README.md) — the capstone. Uses counting (from [nextword](../nextword/)) plus a little probability.
+
 Spam filters, "is this review positive or negative," "which folder does this email go in" —
 a huge amount of AI is just **sorting things into buckets**. This lesson builds a junk-mail
 detector from scratch and shows exactly how it makes up its mind.
@@ -133,43 +135,72 @@ for (auto it = cnt.constBegin(); it != cnt.constEnd(); ++it)
 tx.commit();
 ```
 
-### Step 3 — Turn a count into a probability (with a safety "+1")
+### Step 3 — Turn a count into a "how likely" number
+
+This is the one line with real math in it, so let's go slowly. It answers: *if a message is junk,
+how likely is it to contain this word?*
 
 ```cpp
 auto logP = [&](int cls, int wordCount) {
-    return std::log((wordCount + 1.0) / (totalWords[cls] + V));
+    return std::log( (wordCount + 1.0) / (totalWords[cls] + V) );
 };
 ```
 
-`P(word | bucket)` = how much of that bucket's words this one makes up. The **+1** ("smoothing")
-means a word we've never seen doesn't crash the math to zero.
+Read it in three pieces:
 
-### Step 4 — Score a new message by looking words up in the DB
+**3a · A fraction is a probability.** `wordCount / totalWords[bucket]` just means *"out of all the
+words in this bucket, what share is this one?"* If "free" shows up 6 times and the junk bucket has ~70
+words total, that's 6 / 70 ≈ 0.09 — "free" is about 9% of junk words. That share **is** the probability.
+
+**3b · The `+1` (called "smoothing").** What about a word that never appeared in a bucket? Its share
+would be 0 — and since we'll be combining many of these, one zero would wipe out everything. So we
+pretend we saw every word one extra time: `(wordCount + 1) / (totalWords + V)`, where `V` is how many
+different words exist. Now nothing is ever exactly zero. That's the whole trick.
+
+**3c · Why the `log(...)`?** To score a whole sentence we'd have to *multiply* a lot of small
+fractions, and tiny × tiny × tiny quickly shrinks to basically zero (computers lose the number). A
+**logarithm** has one handy property: `log(a × b) = log(a) + log(b)`. So taking the log lets us **add**
+instead of multiply — same ranking, no vanishing. That's the only reason it's here.
+
+> **What's a log, in one line?** A tool that turns multiplying into adding. You don't need more than
+> that to follow this.
+
+### Step 4 — Score a new message: add up the evidence
+
+Now sorting a message is easy. Keep a running total for each bucket, and for every word add its
+"how likely" number (from Step 3) to *both* buckets:
 
 ```cpp
-double score[2] = { log(normalPrior), log(junkPrior) };
+double score[2] = { log(normalPrior), log(junkPrior) };   // 4a. start roughly even
 for (const QString &w : words(query)) {
     QiList<WordCount> rows = QiQuery<WordCount>()
-        .filter(QiWhere("word = ", w)).all();      // <-- ask the database
+        .filter(QiWhere("word = ", w)).all();             // 4b. ask the DB for this word
     int wc[2] = { 0, 0 };
     for (int k = 0; k < rows.size(); k++)
         wc[int(rows.at(k)->cls)] = int(rows.at(k)->n);
 
-    score[0] += logP(0, wc[0]);   // evidence toward "normal"
-    score[1] += logP(1, wc[1]);   // evidence toward "junk"
+    score[0] += logP(0, wc[0]);   // 4c. add this word's evidence toward "normal"
+    score[1] += logP(1, wc[1]);   //     ...and toward "junk"
 }
 ```
 
-For every word we pull its counts out of SQLite and add its evidence to each bucket's running total.
+- **4a · Start even.** `normalPrior` / `junkPrior` is just *"before reading any words, how common is
+  each bucket?"* — here 8 examples each, so basically a tie.
+- **4b · Look each word up.** One query per word pulls its counts out of SQLite.
+- **4c · Add, don't decide yet.** Each word nudges *both* totals. A junky word like "free" adds a lot
+  more to the junk total than the normal total — that gap is the evidence piling up.
 
 ### Step 5 — Decide, and say how sure
 
+After the last word, compare the two totals. `exp(...)` just undoes the `log` from Step 3 to turn the
+gap between the totals back into a plain 0–1 chance:
+
 ```cpp
-const double pJunk = 1.0 / (1.0 + std::exp(score[0] - score[1]));  // 0..1
+const double pJunk = 1.0 / (1.0 + std::exp(score[0] - score[1]));  // 0 = normal … 1 = junk
 const bool   junk  = pJunk >= 0.5;
 ```
 
-Whichever bucket scored higher wins; how far apart the scores were becomes the confidence.
+Whichever total is higher wins; how far apart they were becomes the confidence.
 
 **That's the whole classifier:** count words per bucket → store → for a new message, add up each
 word's evidence → pick the bigger side.

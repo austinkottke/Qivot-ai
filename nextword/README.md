@@ -1,5 +1,7 @@
 # Guess the Next Word — a tiny "AI" you can actually read
 
+> **Lesson 1 of 4** · [Qivot AI](../README.md) — start here. Next up: [Find Similar](../findsimilar/).
+
 You know how your phone suggests the next word while you're texting? Type *"see you"* and it offers *"soon"*, *"later"*, *"there"*. That's the whole trick behind chatbots too — they just **guess the next word, over and over**, really well.
 
 This little program does the same thing in the simplest way there is. It reads some example text, learns which word tends to come after which, and then writes new sentences by guessing one word at a time. And here's the fun part: its entire "brain" is just **rows in a database file you can open and read**.
@@ -101,18 +103,42 @@ Not bad for a program whose whole brain is 309 rows in a table!
 
 ---
 
-## The one knob worth playing with: "temperature"
+## How it picks a word: weighted dice + a "temperature" knob
 
-Pass a second number to control how adventurous it is:
+When the model looks up "the", it usually finds several options, each with a different count:
+
+```
+after "the":   sea 7 · sun 5 · little 5 · cat 4 · waves 3 · ...
+```
+
+It doesn't just grab the biggest. It rolls **weighted dice**, in two simple steps:
+
+1. **Give each word a slice of the dice the size of its count.** "sea" (7) gets a bigger slice than
+   "waves" (3).
+2. **Roll once, and take whichever slice you land on.** So "sea" wins most often — but "waves" still
+   comes up sometimes. That little bit of chance is why the writing isn't identical every run.
+
+### The temperature knob
+
+Temperature just reshapes those slices *before* the roll:
+
+- **Low (0.4) — "play it safe."** It stretches the differences: big slices get even bigger, small ones
+  nearly vanish. It almost always takes the most common word → predictable, repetitive.
+- **High (1.6) — "get adventurous."** It flattens the slices toward equal, so rare words get a real
+  chance → surprising, sometimes weird.
+- **1.0** leaves the slices exactly as the counts say.
 
 ```bash
-./nextword 40 0.4     # calm — sticks to the most common, safe choices
+./nextword 40 0.4     # calm — sticks to the safe, common choices
 ./nextword 40 1.0     # normal
 ./nextword 40 1.6     # wild — takes more surprising turns
 ```
 
-- **Low (0.4)** leans hard toward the most common next word. Safer, more repetitive.
-- **High (1.6)** evens out the odds so rarer words get a real shot. More surprising, sometimes weirder.
+In code it's one line — raise each count to a power set by the temperature, then roll:
+
+```cpp
+weight = pow(count, 1.0 / temperature);   // low temp → big gaps; high temp → nearly flat
+```
 
 Real chatbots have this exact same dial. Turn it down for a factual answer, up for a creative one.
 

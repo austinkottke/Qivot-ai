@@ -7,17 +7,7 @@ side panel that shows *why* the winner won.
 > New to the idea? Read the [`findsimilar` tutorial](../findsimilar/README.md) first —
 > this is the same thing with a face on it.
 
-```
-┌───────────────────────────────────────────────────────────┐
-│  🔍  teach my dog to sit▊              keywords: teach,dog… │
-├──────────────────────────────┬────────────────────────────┤
-│  Notes, closest first        │  Why "Training a puppy"?    │
-│  Training a puppy ██████ 0.50 │  its fingerprint words:     │
-│  Baking bread     ░░░░░░ 0.00 │  puppy  ████  (lit)         │
-│  The night sky    ░░░░░░ 0.00 │  treat  ████                │
-│  ...                         │  sit    ███   (lit)         │
-└──────────────────────────────┴────────────────────────────┘
-```
+![The Find Similar app: notes ranked by closeness on the left, and why the top note matched on the right](screenshot.png)
 
 ## What you're looking at
 

@@ -8,18 +8,7 @@ and, crucially, watch it **think**.
 > [`nextword` tutorial](../nextword/README.md) first — this app is the same model
 > with a face on it.
 
-```
-┌──────────────────────────────┬───────────────────────────┐
-│  It writes:                  │  Choosing the word after: │
-│                              │  "the little"             │
-│  The little boat sails on    │  ─────────────────────    │
-│  the calm sea. The cat       │  boat   ██████████  64%   │  ← picked
-│  sleeps in the sun. The▊     │  boat   █████       28%   │
-│                              │  ...                      │
-├──────────────────────────────┴───────────────────────────┤
-│  ▶ Play   Step   Reset      Temperature ──●──  Speed ──●─ │
-└───────────────────────────────────────────────────────────┘
-```
+![The Guess the Next Word app: the sentence it has written so far on the left, and the words it is choosing between on the right](screenshot.png)
 
 ## What you're looking at
 

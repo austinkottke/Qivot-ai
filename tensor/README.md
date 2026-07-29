@@ -1,5 +1,7 @@
 # Tensors — the numbers AI is made of
 
+> **Lesson 3 of 4** · [Qivot AI](../README.md) — builds on the number-lists from [findsimilar](../findsimilar/). Next: [Sort into Buckets](../classify/).
+
 People say neural networks are complicated. The *data* inside them isn't. It's all
 just **tensors** — a fancy word for **a box of numbers**:
 

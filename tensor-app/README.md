@@ -7,18 +7,7 @@ the weight grid, the multiply-and-add, and the output numbers all update as you 
 > Want the idea explained from scratch first? Read the
 > [`tensor` tutorial](../tensor/README.md) — this is the same layer, made hands-on.
 
-```
-┌────────────────────────────┬──────────────────────────────────────┐
-│ 1 · Pick a colour          │ 2 · The weight grid (2×3, from SQLite) │
-│  ▉▉▉▉ swatch                │             red    green   blue        │
-│  Red   ───●───  240         │  brightness +0.30  +0.59  +0.11        │
-│  Green ──●────  150         │  warmth     +0.90  +0.00  -0.90        │
-│  Blue  ●──────   60         │ 3 · Multiply, add, squash              │
-│  as numbers (0..1):        │  brightness = 0.94×0.30 + … = 0.79     │
-│  red   ██████████ 0.94     │  brightness ███████████████ 0.69       │
-│  ...                       │  warmth     ██████████████░ 0.66       │
-└────────────────────────────┴──────────────────────────────────────┘
-```
+![The Tensors app: colour sliders and the input vector on the left, the weight grid and the multiply-add-squash math on the right](screenshot.png)
 
 ## What you're looking at
 

@@ -36,17 +36,21 @@ on something small, the mystery mostly goes away — and that's what this projec
 
 ---
 
-## The four things AI does — and you'll build each one
+## A path through it — four lessons that build on each other
 
-Almost everything AI does is a version of four basic skills. There's a lesson for each,
-and most come as both a read-along terminal version *and* a clickable app.
+Almost everything AI does is a version of four basic skills. Do them **in order** — each
+one leans on an idea from the one before, so the learning stacks up. Every lesson comes as
+a read-along terminal version *and* (mostly) a clickable app.
 
-| The skill | In plain words | Everyday example | Build it |
-|-----------|----------------|------------------|----------|
-| ✍️ **Write** | Guess the next word, over and over | Phone keyboard suggestions; ChatGPT | [nextword](nextword/) · [app](nextword-app/) |
-| 🔍 **Look things up** | Turn things into numbers, find the closest | Search; "find similar" | [findsimilar](findsimilar/) · [app](findsimilar-app/) |
-| 🔢 **Crunch numbers** | Multiply numbers by a grid of weights | The math inside every neural network | [tensor](tensor/) · [app](tensor-app/) |
-| ⚖️ **Decide** | Learn from labelled examples, then sort | Spam filters; yes/no answers | [classify](classify/) · [app](classify-app/) |
+| # | The skill | In plain words | Builds on | Try it |
+|---|-----------|----------------|-----------|--------|
+| **1** | ✍️ **Write** | Learn by counting, then guess the next word | — (start here) | [nextword](nextword/) · [app](nextword-app/) |
+| **2** | 🔍 **Look things up** | Turn things into a *list of numbers*, find the closest | the "turn into numbers" idea | [findsimilar](findsimilar/) · [app](findsimilar-app/) |
+| **3** | 🔢 **Crunch numbers** | Multiply that list of numbers by a *grid* of numbers | number-lists from #2 | [tensor](tensor/) · [app](tensor-app/) |
+| **4** | ⚖️ **Decide** | Learn from labelled examples, weigh evidence, pick a side | counting from #1 + a little probability | [classify](classify/) · [app](classify-app/) |
+
+**Everyday versions:** #1 is your phone's keyboard (and ChatGPT); #2 is search; #3 is the math
+inside every neural network; #4 is a spam filter.
 
 ```mermaid
 flowchart LR
@@ -62,13 +66,14 @@ flowchart LR
 
 ## Where to start
 
-- **Just want to *see* it?** Open a clickable app first — [nextword-app](nextword-app/)
-  (watch it write, one word at a time) or [tensor-app](tensor-app/) (drag some sliders and
-  watch a neural layer compute).
-- **Want it explained from scratch?** Read [nextword](nextword/) — the friendliest starting
-  point — then [findsimilar](findsimilar/), [tensor](tensor/), and [classify](classify/).
-- Each lesson's README is plain English with diagrams, and the `tensor` and `classify`
-  READMEs walk through the actual code line by line.
+- **Want to learn the ideas?** Go in order: **1** [nextword](nextword/) → **2**
+  [findsimilar](findsimilar/) → **3** [tensor](tensor/) → **4** [classify](classify/). Each
+  starts from scratch and adds one new idea to the last.
+- **Just want to *see* something first?** Open a clickable app — [nextword-app](nextword-app/)
+  (watch it write, one word at a time) or [tensor-app](tensor-app/) (drag sliders and watch a
+  neural layer compute).
+- Each lesson's README is plain English with diagrams and a screenshot, and the `tensor` and
+  `classify` READMEs walk through the actual code line by line.
 
 ---
 

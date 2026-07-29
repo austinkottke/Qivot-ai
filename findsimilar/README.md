@@ -1,5 +1,7 @@
 # Find Similar — how an AI "looks things up"
 
+> **Lesson 2 of 4** · [Qivot AI](../README.md) — builds on [nextword](../nextword/) (turning things into numbers). Next: [Tensors](../tensor/).
+
 When you ask an AI assistant a question, it feels like it *understands* you. A huge
 part of that magic is one simple trick:
 
@@ -87,6 +89,52 @@ sort. Longer bar = closer match:
 
 The puppy note wins — not because the computer knows what a dog is, but because its
 numbers were the closest. **That's the whole secret behind AI search.**
+
+---
+
+## Under the hood: the two bits of math, made simple
+
+There are only **two** calculations in this whole thing. Here's each, in plain steps.
+
+### A · Scoring a word — why rare words win
+
+Every word's score is just two things multiplied together:
+
+1. **How often it's in this note.** "boat" appears twice → that part is 2. (Fancy name: *term
+   frequency*.)
+2. **How rare it is across all the notes.** A word in *every* note tells you nothing; a word in
+   *one* note is a strong fingerprint. So rarity is scored like this (fancy name: *IDF*):
+
+   ```cpp
+   idf = log( totalNotes / (1 + notesThatUseTheWord) );   // (+1 so it's never negative)
+   ```
+
+   - "the" is in all 8 notes → `log(8/9)` ≈ **0** → basically no score. Boring.
+   - "telescope" is in just 1 note → `log(8/2)` ≈ **big** → strong score. Special.
+
+3. **Multiply them:** `score = howOften × howRare`. Common words stay tiny; rare words pop out.
+
+That's the famous "TF-IDF," in one sentence: *how much a word is here, times how special it is.*
+
+### B · Measuring closeness — why we divide
+
+To compare your search's fingerprint against a note's fingerprint:
+
+1. **Multiply the shared words and add them up.** For every word they both contain, multiply the
+   two scores, and sum all of those. More shared strong words → bigger total. (Fancy name: *dot
+   product*.)
+2. **Divide by how "long" each fingerprint is.** A long note has bigger numbers just for being
+   long — that would be cheating. Dividing cancels it out, so short and long notes compete fairly:
+
+   ```cpp
+   closeness = sharedTotal / (yourLength × noteLength);
+   ```
+
+3. The answer always lands between **0** (nothing in common) and **1** (a perfect line-up). That
+   number is the bar you see. (Fancy name: *cosine similarity*.)
+
+> **One-line version:** score each word by *how special* it is, then rank notes by *how much
+> overlap* they share with your search — fairly, no matter how long each note is.
 
 ---
 

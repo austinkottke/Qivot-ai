@@ -7,23 +7,7 @@ and a per-word **evidence chart** showing which words pushed which way.
 > New to the idea? Read the [`classify` tutorial](../classify/README.md) first — it explains the
 > method (Naive Bayes) from scratch. This is the same brain with a face on it.
 
-```
-┌───────────────────────────────────────────────────────────────┐
-│  🗂  Sort into Buckets   (learned from 8 junk + 8 normal)      │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │ claim your free cash prize now                          ▊│  │
-│  └─────────────────────────────────────────────────────────┘  │
-│  ┌────────┐   ◄ normal                            junk ►       │
-│  │  JUNK  │   ───────────────────────●──────────────────      │
-│  │100%sure│                                                    │
-│  └────────┘                                                    │
-│  The evidence, word by word:        │  What it learned:        │
-│   claim      │██████                 │  free    │████████       │
-│   free       │███████                │  claim   │███████        │
-│   cash       │████                   │  lunch  ██│               │
-│   prize      │████                   │  meeting █│               │
-└───────────────────────────────────────────────────────────────┘
-```
+![The Sort into Buckets app: a JUNK verdict and normal-to-junk meter up top, per-word evidence bars on the left, and what it learned on the right](screenshot.png)
 
 ## What you're looking at
 
@@ -108,8 +92,12 @@ double Classifier::leanOf(const QString &w) const {
 }
 ```
 
-Positive → the bar leans junk (red); negative → normal (green). This one number **is** each bar
-you see in the window.
+**Subtracting the two logs is the same as dividing the two probabilities** (`log(a) − log(b) = log(a/b)`),
+so this single number answers *"how many times more junky than normal is this word?"* Positive means
+junkier (bar leans right, red); negative means more normal (left, green). It **is** each bar you see.
+
+> New to why we take logs and add a `+1`? The [classify tutorial](../classify/README.md) breaks the
+> probability math down piece by piece (steps 3–5).
 
 ### Step 5 — Score the message live (runs on every keystroke)
 

@@ -47,7 +47,7 @@ ApplicationWindow {
                     placeholderTextColor: "#5A6578"
                     color: "white"; font.pixelSize: 16; background: null
                     onTextChanged: search.query = text
-                    Component.onCompleted: forceActiveFocus()
+                    Component.onCompleted: { text = "teach my dog to sit and stay"; forceActiveFocus() }
                 }
                 Text {
                     visible: search.keywords.length > 0

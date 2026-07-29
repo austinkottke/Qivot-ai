@@ -12,7 +12,9 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickWindow>
 #include <QSqlDatabase>
+#include <QTimer>
 
 int main(int argc, char **argv) {
     QGuiApplication app(argc, argv);
@@ -33,6 +35,15 @@ int main(int argc, char **argv) {
     engine.rootContext()->setContextProperty("brain", &brain);
     engine.load(QUrl("qrc:/main.qml"));
     if (engine.rootObjects().isEmpty()) return 1;
+
+    if (qEnvironmentVariableIsSet("QIVOT_SHOT")) {
+        for (int i = 0; i < 38; i++) brain.step();     // write some words to show
+        auto *win = qobject_cast<QQuickWindow *>(engine.rootObjects().first());
+        QTimer::singleShot(1200, [win] {
+            if (win) win->grabWindow().save(qEnvironmentVariable("QIVOT_SHOT"));
+            QCoreApplication::quit();
+        });
+    }
 
     return app.exec();
 }
