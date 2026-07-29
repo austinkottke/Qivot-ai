@@ -9,6 +9,8 @@
 #   findsimilar-app   - the same search as an interactive QML app (type and watch)
 #   tensor            - the numbers a neural network is made of, one layer by hand
 #   tensor-app        - the same layer as an interactive QML app (drag the sliders)
+#   classify          - sort text into buckets (junk vs normal), learned from examples
+#   classify-app      - the same detector as an interactive QML app (type and watch)
 
 TEMPLATE = subdirs
 
@@ -18,4 +20,6 @@ SUBDIRS += \
     findsimilar \
     findsimilar-app \
     tensor \
-    tensor-app
+    tensor-app \
+    classify \
+    classify-app
